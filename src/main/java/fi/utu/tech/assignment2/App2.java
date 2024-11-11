@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static java.util.Collections.synchronizedList;
+
 public class App2 {
 
     public static void main(String[] args) {
-        List<Integer> sharedList = new ArrayList<>();
+        List<Integer> sharedList = synchronizedList(new ArrayList<Integer>());
         // Luodaan ja käynnistetään threadCount verran laskijasäikeitä, jotka jokainen lisäävät addCount verran alkioita listaan
         int threadCount = 100;
         int addCount = 1000;
