@@ -26,16 +26,18 @@ class Boolikulho {
          * Ennen kuin boolimaljaan alkaa tekemään mitään,
          * voi olla hyvä idea odottaa sen tyhjenemistä...
          */
-
-
-        if (booliValmis) {
-            booli = booli + ", " + boolinNimi;
-            System.out.printf("Boolimalja tulvii juomia %s!%n", booli);
-        } else {
-            this.booli = boolinNimi;
-            booliValmis = true; // Boolivastaava täyttää booliastian
-            System.out.println("Booli valmis: " + booli);
+        while(booliValmis) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                System.out.println(e.getMessage());
+            }
         }
+
+        this.booli = boolinNimi;
+        booliValmis = true; // Boolivastaava täyttää booliastian
+        System.out.println("Booli valmis: " + booli);
+        notifyAll();
     }
 
     public synchronized void juoBooli(String juoja) {
@@ -43,13 +45,17 @@ class Boolikulho {
          * Ennen kuin boolimaljasta juodaan mitään,
          * kannattaa odottaa, että sinne ilmestyy jotain...
          */
-
-        if (!booliValmis) {
-            System.out.println(juoja + " sai käteensä tyhjän boolimaljan");
-        } else {
-            booliValmis = false; // Opiskelija juo boolin
-            System.out.println(juoja + " nautti boolin " + booli);
+        while(!booliValmis) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
+
+        booliValmis = false; // Opiskelija juo boolin
+        System.out.println(juoja + " nautti boolin " + booli);
+        notifyAll();
 
     }
 
