@@ -101,9 +101,9 @@ class BankTransfer implements Runnable {
     @Override
     public void run() {
         // Lukitan 1. tili
-        synchronized (from) {
+        synchronized (from.accountNumber < to.accountNumber ? from : to) {
             // Lukko ensimmäiseen tiliin saatu, aloitetaan toisen tilin lukitus
-            synchronized (to) {
+            synchronized (from.accountNumber > to.accountNumber ? from : to) {
                 // Säie sai yksinoikeudet molempiin tileihin, tarkistetaan tilien kate ja suoritetaan siirto,
                 // jos lakiehdot täyttyvät
                 if ((from.getBalance() - amount) > 0 && (to.getBalance() + amount) <= 1000) {
