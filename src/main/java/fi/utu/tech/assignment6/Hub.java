@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class Hub implements Runnable {
 
-    private Map<Integer, Light> lights = new HashMap<>();
+    private Map<Integer, Light> lights = Collections.synchronizedMap(new HashMap<>());
     private Random rnd = new Random();
     // Mikäli terminaalisi ei osaa tulostaa lamppujen tilaa oikein, voit kokeilla asettaa tämän arvoon "true"
     private boolean ALTERNATE_OUTPUT = false;
@@ -29,7 +29,9 @@ public class Hub implements Runnable {
 
     public void toggleLight(int id) {
         Light l = lights.get(id);
-        l.toggle();
+        synchronized (l) {
+            l.toggle();
+        }
     }
 
     /**
@@ -39,7 +41,9 @@ public class Hub implements Runnable {
      */
     public void turnOnLight(int id) {
         Light l = lights.get(id);
-        l.turnOn();
+        synchronized (l) {
+            l.turnOn();
+        }
     }
 
     /**
@@ -49,7 +53,9 @@ public class Hub implements Runnable {
      */
     public void turnOffLight(int id) {
         Light l = lights.get(id);
-        l.turnOff();
+        synchronized (l) {
+            l.turnOff();
+        }
     }
 
     /**
@@ -74,8 +80,10 @@ public class Hub implements Runnable {
      * Turn off all the lights
      */
     public void turnOffAllLights() {
-        for (var l : lights.values()) {
-            l.turnOff();
+        synchronized(lights) {
+            for (var l : lights.values()) {
+                l.turnOff();
+            }
         }
     }
 
@@ -83,8 +91,10 @@ public class Hub implements Runnable {
      * Turn on all the lights
      */
     public void turnOnAllLights() {
-        for (var l : lights.values()) {
-            l.turnOn();
+        synchronized(lights) {
+            for (var l : lights.values()) {
+                l.turnOn();
+            }
         }
     }
 
